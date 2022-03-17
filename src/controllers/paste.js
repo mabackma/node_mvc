@@ -34,7 +34,7 @@ const getCreateNewPaste = (req, res, next) => {
     res.render('paste/pasteViewCreate')
 }
 
-// Uuden pasten luominen, ottaa vastaan POST requestin
+// Uuden pasten luominen, ottaa vastaan POST requestin.
 const postCreateNewPaste = async(req, res, next) => {
 
     try {
