@@ -2,9 +2,13 @@ import Paste from "../models/paste.js";
 import hljs from 'highlight.js'
 import { escape } from "html-escaper";
 
+// Hakee kaikki pastet
 const getAllPastes = async(req, res, next) => {
     try {
+        // Hakee kaikki pastet objektista ja lisää ne listaan
         const pasteItems = await Paste.find({});
+
+        // Jos objektissa ei ollut yhtään pastea niin ilmoitetaan että niitä ei löytynyt (404)
         if (!pasteItems) return res.status(404).send();
 
         res.render('paste/pasteViewAll', { pasteItems })
@@ -13,7 +17,10 @@ const getAllPastes = async(req, res, next) => {
     }
 }
 
+// Hakee yhden pasten id:n perusteella
 const getPaste = async(req, res, next) => {
+
+    // Jos pastea ei löytynyt id:n perusteella niin ilmoitetaan siitä (404)
     if (!req.params.id) {
         res.status(400).send();
         return
@@ -21,15 +28,17 @@ const getPaste = async(req, res, next) => {
 
     try {
         const paste = await Paste.findById(req.params.id);
+        // Jos pastea ei ole, niin ilmoitetaan siitä (404)
         if (!paste) return res.status(404).send();
 
+        // Lähettää paste objektin, jonka paste/pasteViewSingle.ejs muuttaa näkyväksi html koodiksi views osiossa.
         res.render('paste/pasteViewSingle', paste)
     } catch (e) {
         next(e);
     }
 }
 
-
+// Tässä paste/pasteViewCreate.ejs luo käyttäjän syöttämistä tiedoista uuden paste objektin
 const getCreateNewPaste = (req, res, next) => {
     res.render('paste/pasteViewCreate')
 }
@@ -77,11 +86,17 @@ const postCreateNewPaste = async(req, res, next) => {
     }
 }
 
+// Poistaa pasten 
 const deletePaste = async(req, res, next) => {
     if (!req.params.id) return res.status(400).send();
     try {
+        // Etsitään paste id:n perusteella
         const paste = await Paste.findById(req.params.id);
+
+        // Jos pastea ei löydy, niin ilmoitetaan siitä (404)
         if (!paste) return res.status(404).send();
+
+        // Poistetaan paste
         await paste.delete();
 
         next("Poisto onnistui")
