@@ -88,10 +88,26 @@ const deleteNote = async(req, res, next) => {
     }
 }
 
+// Työn alla. Tällä hetkellä tämä vain poistaa noten ja vie käyttäjän luomaan uutta notea
+const updateNote = async(req, res, next) => {
+    if (!req.params.id) return res.status(400).send();
+    try {
+        const note = await Note.findById(req.params.id);
+        if (!note) return res.status(404).send();
+        await note.delete();
+
+        res.render('note/noteViewCreate')
+
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     getNote,
     getAllNotes,
     getCreateNewNote,
     postCreateNewNote,
-    deleteNote
+    deleteNote,
+    updateNote
 }
