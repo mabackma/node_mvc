@@ -42,7 +42,7 @@ const postCreateNewNote = async(req, res, next) => {
         // Ottaa vastaan POST requestin bodyssä seuraavat tiedot:
         // title, content
         const { title, content } = req.body
-
+        
         // Tarkistetaan ettei kumpikaan vaadituista tiedoista ole tyhjä,
         // jos on niin lähetetään error viesti middlewaren käsiteltäväksi
         if (!title || !content) return next('Molemmat kentät tulee täyttää')
@@ -56,7 +56,7 @@ const postCreateNewNote = async(req, res, next) => {
 
         // Tallennetaan Note instanssin data tietokantaan
         const data = await note.save();
-
+        
         // Jos tietokanta ei anna vastausta niin toiminto on epäonnistunut
         // ja lähetetään error status 500 - internal server error
         if (!data) {
@@ -78,24 +78,34 @@ const deleteNote = async(req, res, next) => {
     if (!req.params.id) return res.status(400).send();
     try {
         const note = await Note.findById(req.params.id);
+        const removed_title = note.title
+
         if (!note) return res.status(404).send();
         await note.delete();
 
-        next("Poisto onnistui")
+        next("Poisto onnistui. " + removed_title + " on poistettu.")
 
     } catch (e) {
         next(e);
     }
 }
 
+const getUpdateNote = (req, res, next) => {
+    res.render('note/noteViewUpdate')
+}
+
 // Työn alla. Tällä hetkellä päivittää content kentän vain pamametrin kautta
-const updateNote = async(req, res, next) => {
+const postUpdateNote = async(req, res, next) => {
     if (!req.params.id) return res.status(400).send();
     try {
         let note = await Note.findById(req.params.id);
         if (!note) return res.status(404).send();
 
-        Note.findByIdAndUpdate(note.id, {content: "Modified content!"}, {new: true}, function (err, data) {
+        //res.render('note/noteViewUpdate', note)
+        console.log("postUpdateNote käynnissä!")
+        //const { title, content } = req.body
+
+        Note.findByIdAndUpdate(note.id, {content: "Updated content!"}, {new: true}, function (err, data) {
             if (err){
                 console.log(err)
             }
@@ -103,10 +113,6 @@ const updateNote = async(req, res, next) => {
                 console.log("Updated User : ", data);
             }
         });
-
-        // Avataan muokattu note ja näytetään se
-        note = await Note.findById(req.params.id);
-        res.render('note/noteViewSingle', note)
 
     } catch (e) {
         next(e);
@@ -119,5 +125,7 @@ export default {
     getCreateNewNote,
     postCreateNewNote,
     deleteNote,
-    updateNote
+    
+    getUpdateNote,
+    postUpdateNote
 }
