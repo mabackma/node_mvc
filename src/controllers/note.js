@@ -90,8 +90,16 @@ const deleteNote = async(req, res, next) => {
     }
 }
 
-const getUpdateNote = (req, res, next) => {
-    res.render('note/noteViewUpdate')
+const getUpdateNote = async(req, res, next) => {
+    if (!req.params.id) return res.status(400).send();
+    try {
+        const note = await Note.findById(req.params.id);
+        if (!note) return res.status(404).send();
+
+        res.render('note/noteViewUpdate', note)
+    } catch (e) {
+        next(e);
+    }
 }
 
 // Työn alla. Tällä hetkellä päivittää content kentän vain pamametrin kautta
@@ -125,7 +133,7 @@ export default {
     getCreateNewNote,
     postCreateNewNote,
     deleteNote,
-    
+
     getUpdateNote,
     postUpdateNote
 }
