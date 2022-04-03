@@ -90,8 +90,13 @@ const deleteNote = async(req, res, next) => {
     }
 }
 
+// Sama kuin GetNote mutta käytössä noteViewUpdate näkymässä
 const getUpdateNote = async(req, res, next) => {
-    if (!req.params.id) return res.status(400).send();
+    if (!req.params.id) {
+        res.status(400).send();
+        return
+    }
+
     try {
         const note = await Note.findById(req.params.id);
         if (!note) return res.status(404).send();
@@ -102,18 +107,16 @@ const getUpdateNote = async(req, res, next) => {
     }
 }
 
-// Työn alla. Tällä hetkellä päivittää content kentän vain pamametrin kautta
+// Päivittää Noten.
 const postUpdateNote = async(req, res, next) => {
     if (!req.params.id) return res.status(400).send();
     try {
         let note = await Note.findById(req.params.id);
         if (!note) return res.status(404).send();
 
-        //res.render('note/noteViewUpdate', note)
-        console.log("postUpdateNote käynnissä!")
-        //const { title, content } = req.body
+        const { title, content } = req.body
 
-        Note.findByIdAndUpdate(note.id, {content: "Updated content!"}, {new: true}, function (err, data) {
+        Note.findByIdAndUpdate(note.id, {title: title, content: content}, {new: true}, function (err, data) {
             if (err){
                 console.log(err)
             }
@@ -121,6 +124,10 @@ const postUpdateNote = async(req, res, next) => {
                 console.log("Updated User : ", data);
             }
         });
+
+        // Näytetään päivitetty Note
+        const updatedNote = await Note.findById(req.params.id);
+        res.render('note/noteViewSingle', updatedNote)
 
     } catch (e) {
         next(e);
