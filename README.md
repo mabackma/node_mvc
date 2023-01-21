@@ -1,5 +1,10 @@
 # MVC Esimerkki Node.js:llä
 
+School project: MVC example with Node.js
+
+
+
+
 Asenna npm paketit
 ```
 npm install
