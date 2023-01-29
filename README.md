@@ -2,7 +2,7 @@
 
 School project: MVC example with Node.js
 
-
+Deployed at https://my-snippets.onrender.com/
 
 
 Asenna npm paketit
