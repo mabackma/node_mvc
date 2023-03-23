@@ -1,8 +1,6 @@
 # MVC Esimerkki Node.js:llä
 
-School project: MVC example with Node.js
-
-Deployed at https://my-snippets.onrender.com/
+School project: MVC example with Node.js 
 
 
 
