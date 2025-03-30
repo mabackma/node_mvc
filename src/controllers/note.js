@@ -35,7 +35,7 @@ const getCreateNewNote = (req, res, next) => {
     res.render('note/noteViewCreate')
 }
 
-// Uuden noten luominen, ottaa vastaan POST requestin
+// Uuden noten luominen, ottaa vastaan POST requestin.
 const postCreateNewNote = async(req, res, next) => {
 
     try {
